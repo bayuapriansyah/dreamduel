@@ -6,7 +6,7 @@ import { homedir } from "node:os";
 
 // Lives outside the project tree by default: a database inside it makes the dev
 // server's file watcher rebuild on every write.
-const DB_PATH = resolve(process.env.DREAMDUEL_DB ?? join(homedir(), ".dreamduel", "dreamduel.db"));
+const DB_PATH = resolve(/* turbopackIgnore: true */ process.env.DREAMDUEL_DB ?? join(homedir(), ".dreamduel", "dreamduel.db"));
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS duels (

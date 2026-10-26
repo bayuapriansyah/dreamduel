@@ -77,6 +77,15 @@ Useful scripts:
 | `npx tsx scripts/play-duel.ts 5` | Plays a full 5-minute duel against the Sparring Bot from the command line |
 | `npx tsx scripts/spike-reactivity.ts` | Shows Reactivity pushes with equity from `ethCalls` |
 
+## Deploy (Railway)
+
+The referee is a long-running process (Reactivity WebSockets, timers, SQLite), so it runs on a Node host rather than serverless functions.
+
+1. New Railway project from this GitHub repo. `railway.json` sets build, start and the `/api/health` check.
+2. Add a volume mounted at `/data`.
+3. Variables: `DREAMDUEL_DB=/data/dreamduel.db`, `SPARRING_PRIVATE_KEY=<bot EOA key>`, `PUBLIC_URL=https://<your-domain>`.
+4. Keep one replica: the engine and the Sparring Bot are single-writer by design.
+
 ## Evidence
 
 Live orders, deposits and settled duels on Somnia Tokyo testnet are listed in [`docs/EVIDENCE.md`](docs/EVIDENCE.md) with tx hashes and blocks.
