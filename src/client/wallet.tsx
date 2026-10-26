@@ -40,6 +40,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [hasWallet, setHasWallet] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const clientRef = useRef<WalletClient | null>(null);
+  const connectingRef = useRef(false);
+  const switchingRef = useRef(false);
 
   const bind = useCallback(async (addr: `0x${string}` | null) => {
     setAddress(addr);
@@ -73,6 +75,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const switchChain = useCallback(async () => {
     const eth = window.ethereum;
     if (!eth) throw new Error("No wallet found. Install MetaMask.");
+    if (switchingRef.current) return;
+    switchingRef.current = true;
     try {
       await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_HEX }] });
     } catch (e: any) {
@@ -89,24 +93,30 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           },
         ],
       });
+    } finally {
+      switchingRef.current = false;
     }
   }, []);
 
   const connect = useCallback(async () => {
     const eth = window.ethereum;
     if (!eth) throw new Error("No wallet found. Install MetaMask.");
+    if (connectingRef.current) return null;
+    connectingRef.current = true;
     setConnecting(true);
     try {
+      // One wallet prompt at a time. Chaining a network switch right after the connect
+      // prompt can leave MetaMask's popup without a request origin and crash its UI, so
+      // the switch is a separate, user-initiated step ("Switch to Tokyo" in the nav).
       const accounts = (await eth.request({ method: "eth_requestAccounts" })) as string[];
       const addr = (accounts[0] as `0x${string}`) ?? null;
       await bind(addr);
-      const c = parseInt((await eth.request({ method: "eth_chainId" })) as string, 16);
-      if (c !== hidekiTestnet.id) await switchChain();
       return addr;
     } finally {
+      connectingRef.current = false;
       setConnecting(false);
     }
-  }, [bind, switchChain]);
+  }, [bind]);
 
   const signIntent = useCallback(
     async (action: AuthAction, subject: string): Promise<SignedIntent> => {
