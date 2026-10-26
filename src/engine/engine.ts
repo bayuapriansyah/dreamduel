@@ -46,6 +46,7 @@ interface LiveDuel {
 }
 
 const toNum = (raw: bigint) => Number(formatUnits(raw, 18));
+const fmtRet = (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(Math.abs(v) < 0.1 ? 3 : 2)}%`;
 const emptySide = (): LiveSide => ({ equity: null, position: 0, notional: 0, entryPrice: null });
 
 export class DuelEngine {
@@ -375,7 +376,7 @@ export class DuelEngine {
         d.id,
         "settled",
         outcome === "draw" ? null : outcome,
-        `${reason === "ko" ? "KO! " : "Closing bell. "}${verdict}: A ${sa.returnPct.toFixed(2)}% vs B ${sb.returnPct.toFixed(2)}% (block ${a.block})`,
+        `${reason === "ko" ? "KO! " : "Closing bell. "}${verdict}: A ${fmtRet(sa.returnPct)} vs B ${fmtRet(sb.returnPct)} (block ${a.block})`,
       );
     } catch (e: any) {
       console.error(`[engine] settle ${d.id} failed, retrying next tick`, e);

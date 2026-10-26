@@ -78,7 +78,16 @@ export class SparringBot {
     const target = wantFlat ? 0 : (dir * targetNotional) / mark;
     const delta = target - position;
     if (Math.abs(delta * mark) < d.capUsd * 0.1) return;
-    await this.trade(d, delta, wantFlat ? "takes profit" : dir > 0 ? "goes long" : "goes short");
+    const why = wantFlat
+      ? "closes out"
+      : Math.sign(target) === Math.sign(position) && Math.abs(target) < Math.abs(position)
+        ? "trims"
+        : Math.sign(target) === Math.sign(position)
+          ? "adds"
+          : dir > 0
+            ? "goes long"
+            : "goes short";
+    await this.trade(d, delta, why);
   }
 
   async onSettled(id: string) {
