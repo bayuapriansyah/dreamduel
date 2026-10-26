@@ -28,6 +28,16 @@ export class SparringBot {
   async init() {
     await this.ex.loadMarkets();
     this.address = this.ex.walletAddress!.toLowerCase();
+    await this.topUp().catch((e) => console.warn("[sparring] top-up skipped:", e?.errorName ?? e?.message));
+  }
+
+  /** Move faucet USDso from the bot's wallet into its MarginBank, keeping gas STT untouched. */
+  async topUp() {
+    const bal = await this.ex.fetchBalance();
+    const usdso = Math.floor(bal.USDso?.free ?? bal.USDso?.total ?? 0);
+    if (usdso < 1) return;
+    await this.ex.depositMargin("BTC/USDso:USDso", usdso);
+    console.log(`[sparring] deposited ${usdso} USDso as margin`);
   }
 
   private inPlay(): boolean {
@@ -36,6 +46,8 @@ export class SparringBot {
 
   async maybeAccept(d: Duel) {
     if (!this.address || d.creator === this.address || this.inPlay()) return;
+    // Faucet drops land in the wallet; sweep them into margin before taking a seat.
+    await this.topUp().catch(() => {});
     if (!transition(d.id, "open", "starting", { opponent: this.address })) return;
     addEvent(d.id, "joined", "B", "Sparring Bot accepted the challenge");
     this.nextDecision = 0;
