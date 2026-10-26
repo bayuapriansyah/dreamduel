@@ -15,6 +15,7 @@ export const POST = handle(async (req: Request, ctx: { params: Promise<{ id: str
   if (who === d.creator) return bad("You cannot accept your own challenge");
   const busy = listDuels(["starting", "live", "settling"], 200).some((x) => x.creator === who || x.opponent === who);
   if (busy) return bad("You are already in a duel", 409);
+  await engine().assertMargin(who, d.market, d.capUsd);
   if (!transition(id, "open", "starting", { opponent: who })) return bad("Someone else got there first", 409);
   addEvent(id, "joined", "B", "Challenger accepted");
   engine().arm(id);

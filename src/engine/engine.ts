@@ -14,7 +14,9 @@ import {
   updateDuel,
   type Duel,
 } from "../lib/duels";
-import { CAP_TOLERANCE, COUNTDOWN_SEC, OPEN_CHALLENGE_TTL_SEC, marketLabel } from "../lib/rules";
+import { CAP_TOLERANCE, COUNTDOWN_SEC, KO_LOSS_SHARE, OPEN_CHALLENGE_TTL_SEC, marketLabel } from "../lib/rules";
+
+export class MarginError extends Error {}
 import { decide, scorePlayer } from "../lib/scoring";
 import { duelView, type DuelView, type LiveSide } from "./view";
 import { SparringBot } from "./sparring";
@@ -155,6 +157,17 @@ export class DuelEngine {
       ...(blockNumber ? { blockNumber } : {}),
     });
     return { equity: toNum(eq.totalEquity), block: eq.asOfBlock };
+  }
+
+  /** Refuse a seat to an account that could not survive to the KO line. */
+  async assertMargin(account: string, market: string, capUsd: number) {
+    const need = capUsd * KO_LOSS_SHARE;
+    const { equity } = await this.readEquity(account, this.market(market).marginBank);
+    if (equity < need) {
+      throw new MarginError(
+        `Perps margin is $${equity.toFixed(2)}. Deposit at least $${need.toFixed(0)} USDso as margin (Setup page) to take a $${capUsd} duel.`,
+      );
+    }
   }
 
   async readPositions(account: string, m: MarketMeta) {

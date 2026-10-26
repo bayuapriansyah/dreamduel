@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { AuthError } from "@/lib/auth-server";
+import { MarginError } from "@/engine/engine";
 
 export function bad(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
@@ -12,6 +13,7 @@ export function handle<A extends unknown[]>(fn: (...args: A) => Promise<Response
       return await fn(...args);
     } catch (e) {
       if (e instanceof AuthError) return bad(e.message, 401);
+      if (e instanceof MarginError) return bad(e.message, 412);
       console.error("[api]", e);
       return bad(e instanceof Error ? e.message : "Unexpected error", 500);
     }

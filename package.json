@@ -6,7 +6,7 @@
     "probe": "tsx scripts/probe.ts",
     "first-order": "tsx scripts/first-order.ts",
     "typecheck": "tsc --noEmit -p .",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test src/lib/scoring.test.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"

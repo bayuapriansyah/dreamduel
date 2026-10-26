@@ -33,6 +33,7 @@ export const POST = handle(async (req: Request) => {
     (d) => d.creator === creator || d.opponent === creator,
   );
   if (busy) return bad("You already have a duel in progress. Finish or cancel it first.", 409);
+  await e.assertMargin(creator, market, capUsd);
   const d = createDuel({ market, durationMin, capUsd, creator, vsBot: !!vsBot });
   e.publish(d.id);
   return NextResponse.json({ duel: e.view(d) }, { status: 201 });
