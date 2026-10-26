@@ -8,7 +8,7 @@ const page = await browser.newPage();
 await page.setViewport({ width: Number(width), height: Number(height) });
 await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: process.env.SCHEME ?? "dark" }]);
 page.on("console", (m) => console.log(`[console.${m.type()}]`, m.text()));
-page.on("pageerror", (e) => console.log("[pageerror]", e.message));
+page.on("pageerror", (e) => console.log("[pageerror]", (e as Error).message));
 page.on("requestfailed", (r) => console.log("[requestfailed]", r.url(), r.failure()?.errorText));
 await page.goto(url!, { waitUntil: "domcontentloaded", timeout: 60000 });
 await new Promise((r) => setTimeout(r, Number(wait)));
