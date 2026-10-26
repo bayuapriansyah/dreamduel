@@ -1,0 +1,24 @@
+{
+  "name": "dreamduel",
+  "version": "1.0.0",
+  "description": "PvP perps duels on dreamDEX (Somnia Tokyo testnet)",
+  "scripts": {
+    "probe": "tsx scripts/probe.ts",
+    "first-order": "tsx scripts/first-order.ts",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@somnia-chain/markets-sdk": "^0.32.1",
+    "dotenv": "^18.0.9",
+    "viem": "^2.57.11"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
