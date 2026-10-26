@@ -1,4 +1,4 @@
-import { createExchange } from "../src/exchange.js";
+import { createExchange } from "../src/lib/exchange";
 
 const exchange = createExchange();
 const markets = await exchange.loadMarkets();

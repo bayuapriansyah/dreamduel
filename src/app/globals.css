@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/*
+  DreamDuel tokens. One accent (ember) marks side A and every primary action.
+  Side B is a cool silver so the two duelists read apart without a second accent.
+  Up/down colours appear only on PnL numbers.
+  Radius rule: panels 14px, controls 10px, pills full.
+*/
+:root {
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --surface-2: #ececea;
+  --line: #dcdcd8;
+  --text: #121214;
+  --muted: #5b5b63;
+  --accent: #d9501a;
+  --accent-ink: #ffffff;
+  --side-b: #3c4a5e;
+  --up: #12915b;
+  --down: #d2333f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0b;
+    --surface: #121215;
+    --surface-2: #1a1a1f;
+    --line: #26262c;
+    --text: #ececee;
+    --muted: #8c8c96;
+    --accent: #ff6a2b;
+    --accent-ink: #160a04;
+    --side-b: #c9d3e3;
+    --up: #3fd896;
+    --down: #ff5b67;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-side-b: var(--side-b);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --radius-panel: 14px;
+  --radius-control: 10px;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  color-scheme: light dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "tnum";
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}

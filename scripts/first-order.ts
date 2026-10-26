@@ -1,5 +1,5 @@
 // Day-1 smoke test: deposit margin, open a tiny BTC long, close it, print tx hashes.
-import { createExchange } from "../src/exchange.js";
+import { createExchange } from "../src/lib/exchange";
 
 const SYMBOL = "BTC/USDso:USDso";
 const exchange = createExchange(process.env.DUEL_PRIVATE_KEY);
