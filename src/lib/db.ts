@@ -1,9 +1,12 @@
 // SQLite via Node's built-in driver: no native build step, one file on disk.
 import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { homedir } from "node:os";
 
-const DB_PATH = resolve(process.env.DREAMDUEL_DB ?? "data/dreamduel.db");
+// Lives outside the project tree by default: a database inside it makes the dev
+// server's file watcher rebuild on every write.
+const DB_PATH = resolve(process.env.DREAMDUEL_DB ?? join(homedir(), ".dreamduel", "dreamduel.db"));
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS duels (

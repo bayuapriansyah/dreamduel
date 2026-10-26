@@ -33,7 +33,7 @@ export function EventFeed({ events }: { events: DuelEvent[] }) {
                 <div className="flex flex-col">
                   <span className={e.kind === "settled" || e.kind === "ko" ? "font-medium" : ""}>{e.text}</span>
                   <span className="num flex items-center gap-2 text-xs text-muted">
-                    {new Date(e.ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                    {new Date(e.ts).toLocaleTimeString("en-GB", { hour12: false })}
                     {e.txHash ? (
                       <a href={txUrl(e.txHash)} target="_blank" rel="noreferrer" className="flex items-center gap-0.5 hover:text-text">
                         {e.txHash.slice(0, 10)}… <ArrowSquareOut size={11} />

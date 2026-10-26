@@ -1,6 +1,7 @@
-export function fmtPct(v: number | null | undefined, digits = 2): string {
+export function fmtPct(v: number | null | undefined, digits?: number): string {
   if (v == null || !Number.isFinite(v)) return "--";
-  const s = v.toFixed(digits);
+  // Short duels move fractions of a percent; keep them readable instead of rounding to 0.00.
+  const s = v.toFixed(digits ?? (Math.abs(v) < 0.1 && v !== 0 ? 3 : 2));
   return v > 0 ? `+${s}%` : `${s}%`;
 }
 
